@@ -92,6 +92,9 @@ logs/
 #Artifacts
 Artifacts
 
+#notes
+notes
+
 # System files
 .DS_Store
 Thumbs.db
