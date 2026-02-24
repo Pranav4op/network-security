@@ -98,3 +98,6 @@ notes
 # System files
 .DS_Store
 Thumbs.db
+
+#Test
+test.py
