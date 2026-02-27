@@ -12,9 +12,7 @@ from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
 
 load_dotenv()
-mongo_password = os.getenv("MONGO_PASSWORD")
-
-uri = f"mongodb+srv://pranavjoshi2210_db_user:{mongo_password}@cluster0.twde3nj.mongodb.net/?appName=Cluster0"
+MONGO_DB_URL = os.getenv("MONGO_DB_URL")
 
 
 class NetworkDataExtract:
@@ -40,7 +38,7 @@ class NetworkDataExtract:
             self.collection = collection
             self.records = records
 
-            self.mongoclient = pymongo.MongoClient(uri)
+            self.mongoclient = pymongo.MongoClient(MONGO_DB_URL)
             self.database = self.mongoclient[self.database]
 
             self.collection = self.database[self.collection]
