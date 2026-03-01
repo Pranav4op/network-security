@@ -5,6 +5,9 @@ import numpy as np
 import dill
 import pickle
 import logging
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score
+
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +47,49 @@ def save_numpy_array_data(file_path: str, array: np.array):
         raise NetworkSecurityException(e, sys) from e
 
 
+def load_numpy_array_data(file_path: str) -> np.array:
+    """
+    load numpy array data to file
+    file_path: str location of file to load
+    array: np.load data to load
+    """
+    try:
+        with open(file_path, "rb") as file_obj:
+            return np.load(file_obj)
+    except Exception as e:
+        raise NetworkSecurityException(e, sys)
+
+
+def evaluate_models(X_train, y_train, X_test, y_test, models, param):
+    try:
+        report = {}
+
+        for model_name, model in models.items():
+
+            para = param.get(model_name, {})
+
+            if para:
+                gs = GridSearchCV(model, para, cv=3, n_jobs=-1)
+                gs.fit(X_train, y_train)
+                best_model = gs.best_estimator_
+            else:
+                model.fit(X_train, y_train)
+                best_model = model
+
+            y_test_pred = best_model.predict(X_test)
+
+            test_score = accuracy_score(y_test, y_test_pred)
+
+            report[model_name] = test_score
+
+            models[model_name] = best_model
+
+        return report
+
+    except Exception as e:
+        raise NetworkSecurityException(e, sys)
+
+
 def save_object(file_path: str, obj: object) -> None:
     try:
         logging.info("Entered the save_object method of MainUtils class")
@@ -53,3 +99,14 @@ def save_object(file_path: str, obj: object) -> None:
         logging.info("Exited the save_object method of MainUtils class")
     except Exception as e:
         raise NetworkSecurityException(e, sys) from e
+
+
+def load_object(file_path: str) -> object:
+    try:
+        if not os.path.exists(file_path):
+            raise Exception(f"The file: {file_path} does not exist")
+        with open(file_path, "rb") as file_obj:
+            print(file_obj)
+            return pickle.load(file_obj)
+    except Exception as e:
+        raise NetworkSecurityException(e, sys)
