@@ -2,6 +2,7 @@ import sys, os
 import numpy as np
 import pandas as pd
 from sklearn.impute import KNNImputer
+from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.constant.training_pipeline import TARGET_COLUMN
@@ -53,7 +54,12 @@ class DataTransformation:
                 f"Initializing KNNImputer with params: {DATA_TRANSFORMATION_IMPUTER_PARAMS}"
             )
             imputer: KNNImputer = KNNImputer(**DATA_TRANSFORMATION_IMPUTER_PARAMS)
-            processor: Pipeline = Pipeline([("imputer", imputer)])
+            processor: Pipeline = Pipeline(
+                [
+                    ("imputer", imputer),
+                    ("scaler", StandardScaler()),
+                ]
+            )
             logger.info("Pipeline object created successfully")
             return processor
         except Exception as e:
