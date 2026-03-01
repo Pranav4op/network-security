@@ -24,7 +24,7 @@ from sklearn.ensemble import (
 )
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
-
+import mlflow
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,6 +41,17 @@ class ModelTrainer:
             self.data_transformation_artifact = data_transformation_artifact
         except Exception as e:
             raise NetworkSecurityException(e, sys)
+
+    def track_mlflow(self, best_model, classificationmetric):
+        with mlflow.start_run():
+            f1_score = classificationmetric.f1_score
+            precision_score = classificationmetric.precision_score
+            recall_score = classificationmetric.recall_score
+
+            mlflow.log_metric("F1 Score", f1_score)
+            mlflow.log_metric("Precision Score", precision_score)
+            mlflow.log_metric("Recall Score", recall_score)
+            mlflow.sklearn.log_model(best_model, "Model")
 
     def train_model(self, X_train, y_train, X_test, y_test):
         models = {
@@ -95,10 +106,13 @@ class ModelTrainer:
             y_pred=y_train_pred, y_true=y_train
         )
 
+        self.track_mlflow(best_model, classification_train_metric)
+
         y_test_pred = best_model.predict(X_test)
         classification_test_metric = get_classification_score(
             y_pred=y_test_pred, y_true=y_test
         )
+        self.track_mlflow(best_model, classification_train_metric)
 
         preprocessor = load_object(
             file_path=self.data_transformation_artifact.transformed_object_file_path
