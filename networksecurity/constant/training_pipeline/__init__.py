@@ -67,4 +67,4 @@ MODEL_TRAINER_EXPECTED_SCORE: float = 0.6
 MODEL_TRAINER_OVER_FIITING_UNDER_FITTING_THRESHOLD: float = 0.05
 MODEL_FILE_NAME: str = "model.pkl"
 SAVED_MODEL_DIR = os.path.join("saved_models")
-TRAINING_BUCKET_NAME = "netwworksecurity"
+TRAINING_BUCKET_NAME = "networksecurity-appa"
