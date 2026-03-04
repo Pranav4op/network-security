@@ -97,5 +97,5 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
           IMAGE_TAG: latest
         run: |
-          docker run -d -p 8000:8000 --name networksecurity-container \
+          docker run -d -p 8080:8000 --name networksecurity-container \
           $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
